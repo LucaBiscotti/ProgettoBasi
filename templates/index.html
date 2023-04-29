@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="title">{% block title %} Students {% endblock %}</h1>
+    <div class="content">
+        {% for student in students %}
+            <div class="student">
+                <p><b>#{{ student.matricola }}</b></p>
+                <b>
+                    <p class="name">{{ student.nome }} {{ student.cognome }}</p>
+                </b>
+                <p>{{ student.email }}</p>
+                <p>{{ student.password_hash }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
