@@ -15,6 +15,8 @@ Caratteristiche principali:
 
 -Assegnazione di voti agli studenti
 
+-Iscrizione da parte degli studenti agli esami
+
 -Accesso degli studenti agli esami a cui sono iscritti
 
 -Grafica moderna e intuitiva con HTML, CSS e JavaScript
