@@ -43,6 +43,12 @@ class Docenti(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
     
+    def is_active(self):
+        return True
+    
+    def get_id(self):
+        return str(self.id)
+    
 class Esami(db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     cfu = db.Column(db.Integer, nullable=False)
