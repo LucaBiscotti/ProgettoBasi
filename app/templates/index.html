@@ -1,16 +1,19 @@
 {% extends 'base.html' %}
 
+{% block name %}
+    Ciao {{ user.nome }}
+{% endblock %}
+
 {% block content %}
-    <h1 class="title">{% block title %} Students {% endblock %}</h1>
+    <h1 class="title">{% block title %} Esami {% endblock %}</h1>
     <div class="content">
-        {% for student in students %}
+        {% for corso in corsi %}
             <div class="student">
-                <p><b>#{{ student.matricola }}</b></p>
+                <p><b>#{{ corso.ruolo }}</b></p>
                 <b>
-                    <p class="name">{{ student.nome }} {{ student.cognome }}</p>
+                    <p class="name">{{ corso.id_docente }} {{ corso.id_esame }}</p>
                 </b>
-                <p>{{ student.email }}</p>
-                <p>{{ student.password_hash }}</p>
+                <p>{{ corso.codice_insegnamento }}</p>
             </div>
         {% endfor %}
     </div>

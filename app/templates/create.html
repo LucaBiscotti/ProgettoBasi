@@ -1,44 +1,50 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1 style="width: 100%">{% block title %} Add a New Student {% endblock %}</h1>
+    <h1 style="width: 100%">{% block title %} Crea nuovo esame {% endblock %}</h1>
     <form method="post">
+
         <p>
-            <label for="matricola">Matricola</label>
-            <input type="text" name="matricola"
-                   placeholder="Matricola">
+            <label for="codice">Codice Insegnamento</label>
+            <select type="text" name="inse" id="inse">
+                <<option value="" disabled selected>Seleziona esame</option>
+                {% for ins in insegnamenti %}
+                    <option value="{{ ins.codice }}"> {{ ins.codice }} </option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
+            <label for="codice">Codice Corso</label>
+            <select type="text" name="codice" id="codice" placeholder="CT000">
+            </select>
+          </p>
+        <p>
+            <label for="A.A">Anno Accademico</label>
+            <input type="number" name="anno"
+                   placeholder="2022">
             </input>
         </p>
         <p>
-            <label for="firstname">First Name</label>
-            <input type="text" name="nome"
-                   placeholder="First name">
+            <label for="CFU">CFU</label>
+            <input type="number" name="cfu"
+                   placeholder="12">
+            </input>
+        </p>
+        <p>
+            <label for="data_i">Data inizio</label>
+            <input type="date" name="data_i"
+                   placeholder="">
+            </input>
+        </p>
+        <p>
+            <label for="data_f">Data Fine</label>
+            <input type="date" name="data_f"
+                   placeholder="">
             </input>
         </p>
 
         <p>
-            <label for="lastname">Last Name</label>
-            <input type="text" name="cognome"
-                   placeholder="Last name">
-            </input>
-        </p>
-
-        <p>
-            <label for="email">Email</label>
-            <input type="email" name="email"
-                   placeholder="Student email">
-            </input>
-        </p>
-
-        <p>
-            <label for="password">password</label>
-            <input type="text" name="password"
-                   placeholder="*******">
-            </input>
-        </p>
-
-        <p>
-            <button type="submit">Submit</button>
+            <button type="submit">Crea</button>
         </p>
     </form>
 {% endblock %}

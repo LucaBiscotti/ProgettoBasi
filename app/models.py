@@ -13,6 +13,10 @@ class TipoScadenza(Enum):
     durata = "DURATA"
     data = "DATA"
 
+class Ruolo(Enum):
+    presidente = "PRESIDENTE"
+    membro = "MEMBRO"
+
 class Studenti(db.Model):
     matricola = db.Column(db.Integer, unique=True, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
@@ -55,16 +59,24 @@ class Esami(db.Model):
     anno_accademico = db.Column(db.Integer, nullable=False)
     data_inizio = db.Column(db.Date, nullable=False)
     data_fine = db.Column(db.Date, nullable=False)
-    codice_corso = db.Column(db.Integer, db.ForeignKey('corsi.codice'))
+    codice_corso = db.Column(db.String(5), db.ForeignKey('corsi.codice'))
 
 class Corsi(db.Model):
-    codice = db.Column(db.Integer, unique=True, primary_key=True)
+    codice = db.Column(db.String(5), unique=True, primary_key=True)
     titolo = db.Column(db.String(80))
-    codice_insegnamento = db.Column(db.Integer, db.ForeignKey('insegnamenti.codice'))
+    codice_insegnamento = db.Column(db.String(4), db.ForeignKey('insegnamenti.codice'))
     esami = db.relationship('Esami', backref='corso', lazy=True)
 
+    def serialize(self):
+        return {
+            'codice': self.codice,
+            'codice': self.codice,
+            'titolo': self.titolo,
+            'codice_insegnamento': self.codice_insegnamento
+        }
+
 class Insegnamenti(db.Model):
-    codice = db.Column(db.Integer, unique=True, primary_key=True)
+    codice = db.Column(db.String(4), unique=True, primary_key=True)
     nome = db.Column(db.String(80))
     corsi = db.relationship('Corsi', backref='insegnamento', lazy=True)
 
@@ -100,6 +112,7 @@ class EsamiSvolti(db.Model):
 class ListaDocenti(db.Model):
     id_esame = db.Column(db.Integer, db.ForeignKey('esami.id'), primary_key=True)
     id_docente = db.Column(db.Integer, db.ForeignKey('docenti.id'), primary_key=True)
+    ruolo = db.Column(db.Enum(Ruolo),nullable = False)
     docente = db.relationship("Docenti", backref="esami_docente")
     esame = db.relationship("Esami", backref="esami_creati")
 

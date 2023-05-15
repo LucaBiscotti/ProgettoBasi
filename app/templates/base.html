@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        var corsiByInsegnamentoUrl = "{{ url_for('routes.corsi_by_insegnamento') }}";
+    </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/util.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta charset="UTF-8">
     <title>{% block title %} {% endblock %} - FlaskApp</title>
     <style>
@@ -40,8 +45,9 @@
 </head>
 <body>
     <nav>
-        <a href="{{ url_for('routes.index') }}">Studenti</a>
-        <a href="{{ url_for('routes.create') }}">Create</a>
+        <p>{% block name %} {% endblock %}</p>
+        <a href="{{ url_for('routes.index') }}">I miei esami</a>
+        <a href="{{ url_for('routes.create') }}">Crea Esame</a>
         <a href="{{ url_for('routes.logout') }}">Logout</a>
     </nav>
     <hr>

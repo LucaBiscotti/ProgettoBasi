@@ -1,7 +1,9 @@
-from flask import Blueprint, render_template, request, url_for, redirect, flash
+from datetime import date
+from flask import Blueprint, jsonify, render_template, request, url_for, redirect, flash
 from models import *
 from forms import LoginForm
 from flask_login import login_user, logout_user, login_required, current_user, LoginManager
+
 login_manager = LoginManager()
 
 bp = Blueprint('routes', __name__)
@@ -31,35 +33,53 @@ def logout():
         logout_user()
     return redirect(url_for('routes.login', login_url=request.path))
 
-@login_manager.unauthorized_handler
-def unauthorized():
-    flash('You must be logged in to view that page.')
-    return redirect(url_for('routes.login', login_url=request.path))
+# @login_manager.unauthorized_handler
+# def unauthorized():
+#     flash('You must be logged in to view that page.')
+#     return redirect(url_for('routes.login', login_url=request.path))
 
 #Routes
 
 @bp.route('/')
 @login_required
 def index():
-    students = Studenti.query.all()
-    return render_template('/index.html', students=students)
+    user = Docenti.query.get(int(current_user.id))
+    corsi = ListaDocenti.query.filter(ListaDocenti.id_docente == user.id)
+    return render_template('index.html', corsi=corsi, user=user)
 
 @bp.route('/create/', methods=('GET', 'POST'))
 @login_required
 def create():
+    ins = Insegnamenti.query.all()
+    corsi = Corsi.query.all()
     if request.method == 'POST':
-        matricola = int(request.form['matricola'])
-        firstname = request.form['nome']
-        lastname = request.form['cognome']
-        email = request.form['email']
-        pwd = request.form['password']
-        student = Studenti(matricola = matricola,
-                            nome=firstname,
-                            cognome=lastname,
-                            email=email,)
-        student.set_password(pwd)
-        db.session.add(student)
+        cfu = int(request.form['cfu'])
+        anno = request.form['anno']
+        Sdatai = request.form['data_i']
+        Sdataf = request.form['data_f']
+        cod = request.form['codice']
+        datai = date.fromisoformat(Sdatai)
+        dataf = date.fromisoformat(Sdataf)
+        exam = Esami(cfu = cfu,
+                            anno_accademico=anno,
+                            data_inizio=datai,
+                            data_fine=dataf,
+                            codice_corso=cod)
+        db.session.add(exam)
         db.session.commit()
-
+        id = exam.id
+        doc = ListaDocenti(id_esame = id,
+                            id_docente = current_user.id,
+                            ruolo = Ruolo.presidente)
+        db.session.add(doc)
+        db.session.commit()
         return redirect(url_for('routes.index'))
-    return render_template('create.html')
+    return render_template('create.html', insegnamenti = ins, corsi = corsi)
+
+@bp.route('/corsi_by_insegnamento', methods=['GET'])
+def corsi_by_insegnamento():
+    codice_insegnamento = request.args.get('codice_insegnamento', '', type=str)
+    corsi = Corsi.query.filter(Corsi.codice_insegnamento == codice_insegnamento).all()
+    return jsonify([corso.serialize() for corso in corsi])
+
+

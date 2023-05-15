@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from routes import bp as routes_bp
@@ -15,9 +15,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] =\
         'sqlite:///' + os.path.join(basedir, 'database.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+migrate = Migrate(app, db)
+
 class User(UserMixin):
     def __init__(self, id):
         self.id = id
+        
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -28,6 +31,7 @@ def load_user(user_id):
 
 @login_manager.unauthorized_handler
 def unauthorized():
+    flash('You must be logged in to view that page.')
     return redirect(url_for('routes.login'))
 
 db.init_app(app)
