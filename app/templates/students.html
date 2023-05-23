@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="title">{% block title %} Students {% endblock %}</h1>
+    <div class="content">
+        {% for studente in studenti %}
+            <div class="student">
+                <p><b>{{ studente.matricola }}</b></p>
+                <b>
+                    <p class="name">{{ studente.nome }} {{ studente.cognome }}</p>
+                </b>
+                <p>{{ studente.email }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

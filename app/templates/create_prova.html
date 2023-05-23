@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block name %}
+    <a href="{{url_for('routes.exam', esame_id=id)}}">←</a>
+{% endblock %}
+
+{% block content %}
+    <h1 style="width: 100%">{% block title %} Crea nuova prova {% endblock %}</h1>
+    <form method="post">
+        <p>
+            <label>Titolo</label>
+            <input type="text" name="titolo" id="titolo"></input>
+          </p>
+        <p>
+            <label>Percentuale</label>
+            <input type="number" name="percentuale"
+                   placeholder="100%">
+            </input>
+        </p>
+        <p>
+            <label for="aula">Aula</label>
+            <input type="text" name="aula"
+                   placeholder="Aula 1">
+            </input>
+        </p>
+        <p>
+            <label>Durata (in minuti)</label>
+            <input type="number" name="durata"
+                   placeholder="60">
+            </input>
+        </p>
+        <p>
+            <label for="data_i">Data svolgimento</label>
+            <input type="date" name="data_i"
+                   placeholder="">
+            </input>
+        </p>
+        <p>
+            <label>Tipo Voto</label>
+            <select type="text" name="tipo_voto">
+                {% for tipo in voto %}
+                    <option value="{{ tipo.name }}">{{ tipo.value }}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
+            <label>Tipo Scadenza Voto</label>
+            <select type="text" name="tipo_scadenza">
+                {% for tipo in scad %}
+                    <option value="{{ tipo.name }}">{{ tipo.value }}</option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <button type="submit">Crea</button>
+        </p>
+    </form>
+{% endblock %}

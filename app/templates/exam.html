@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<nav>
+    <a>{% block title %} Prove {{ esame.codice_corso }} {% endblock %}</a>
+    <a href="{{url_for('routes.create_prova', id=esame.id)}}">Crea prova</a>
+</nav>
+<div class="content">
+    {% for prova in prove %}
+        <div class="student">
+            <a href="#" class="student">
+                <div>
+                    <p><b>{{ prova.titolo }}</b></p>
+                    <b>
+                        <p class="name">{{ prova.data_inizio }} {{ prova.tipo_scadenza.name }}</p>
+                    </b>
+                    <p>{{ prova.tipo_voto.name }}</p>
+                </div>
+            </a>
+            <a href="{{url_for('routes.student_prove', id=prova.id)}}">Lista iscritti</a>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

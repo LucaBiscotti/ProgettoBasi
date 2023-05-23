@@ -1,56 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" type = "text/css" href="../static/css/style.css">
     <script>
         var corsiByInsegnamentoUrl = "{{ url_for('routes.corsi_by_insegnamento') }}";
     </script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/util.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <meta charset="UTF-8">
     <title>{% block title %} {% endblock %} - FlaskApp</title>
-    <style>
-        .title {
-            margin: 5px;
-        }
-
-        .content {
-            margin: 5px;
-            width: 100%;
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-        }
-
-        .student {
-            flex: 20%;
-            padding: 10px;
-            margin: 5px;
-            background-color: #f3f3f3;
-            inline-size: 100%;
-        }
-
-
-        .name a {
-            color: #00a36f;
-            text-decoration: none;
-        }
-
-        nav a {
-            color: #d64161;
-            font-size: 3em;
-            margin-left: 50px;
-            text-decoration: none;
-        }
-    </style>
 </head>
 <body>
     <nav>
-        <p>{% block name %} {% endblock %}</p>
+        <img src="/static/img/logo.png" alt="logo">
+        <a>{% block name %} {% endblock %}</a>
         <a href="{{ url_for('routes.index') }}">I miei esami</a>
         <a href="{{ url_for('routes.create') }}">Crea Esame</a>
+        <a href="{{ url_for('routes.students', id=0) }}">Cerca Studenti</a>
         <a href="{{ url_for('routes.logout') }}">Logout</a>
     </nav>
-    <hr>
+    <br>
     <div class="content">
         {% block content %} {% endblock %}
     </div>

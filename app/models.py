@@ -23,6 +23,8 @@ class Studenti(db.Model):
     cognome = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
+    lista_iscritti = db.relationship('ListaIscritti', backref='iscritto', lazy=True)
+    esami_svolti = db.relationship('EsamiSvolti', backref='registrato', lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -40,6 +42,7 @@ class Docenti(db.Model):
     email = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     prove = db.relationship('Prove',backref='docente', lazy=True)
+    prove = db.relationship('ListaDocenti',backref='doc_esame', lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -59,17 +62,20 @@ class Esami(db.Model):
     anno_accademico = db.Column(db.Integer, nullable=False)
     data_inizio = db.Column(db.Date, nullable=False)
     data_fine = db.Column(db.Date, nullable=False)
-    codice_corso = db.Column(db.String(5), db.ForeignKey('corsi.codice'))
+    codice_corso = db.deferred(db.Column(db.String(5), db.ForeignKey('corsi.codice', deferrable=True, initially="DEFERRED")))
+    prove = db.relationship('Prove', backref='prova_esame', lazy=True)
+    esami_svolti = db.relationship('EsamiSvolti', backref='esame', lazy=True)
+    esami_docenti = db.relationship('ListaDocenti', backref='esame_doc', lazy=True)
+
 
 class Corsi(db.Model):
     codice = db.Column(db.String(5), unique=True, primary_key=True)
     titolo = db.Column(db.String(80))
-    codice_insegnamento = db.Column(db.String(4), db.ForeignKey('insegnamenti.codice'))
+    codice_insegnamento = db.deferred(db.Column(db.String(4), db.ForeignKey('insegnamenti.codice', deferrable=True, initially="DEFERRED")))
     esami = db.relationship('Esami', backref='corso', lazy=True)
 
     def serialize(self):
         return {
-            'codice': self.codice,
             'codice': self.codice,
             'titolo': self.titolo,
             'codice_insegnamento': self.codice_insegnamento
@@ -89,30 +95,33 @@ class Prove(db.Model):
     durata = db.Column(db.Integer)
     data_inizio = db.Column(db.Date, nullable=False)
     tipo_scadenza = db.Column(db.Enum(TipoScadenza),nullable=False)
-    id_docente = db.Column(db.Integer, db.ForeignKey('docenti.id'))
+    id_docente = db.deferred(db.Column(db.Integer, db.ForeignKey('docenti.id', deferrable=True, initially="DEFERRED")))
+    id_esame = db.deferred(db.Column(db.Integer, db.ForeignKey('esami.id', deferrable=True, initially="DEFERRED")))
+    lista_iscritti = db.relationship('ListaIscritti', backref='prova', lazy=True)
 
 class ListaIscritti(db.Model):
-    id_prova = db.Column(db.Integer, db.ForeignKey('prove.id'), primary_key=True)
-    matricola_studente = db.Column(db.Integer, db.ForeignKey('studenti.matricola'), primary_key=True)
+    id_prova = db.deferred(db.Column(db.Integer, db.ForeignKey('prove.id', deferrable=True, initially="DEFERRED"), primary_key=True))
+    matricola_studente = db.deferred(db.Column(db.Integer, db.ForeignKey('studenti.matricola', deferrable=True, initially="DEFERRED"), primary_key=True))
     voto = db.Column(db.String)
     sostenuto = db.Column(db.Boolean,nullable=False)
     accettato = db.Column(db.Boolean)
     data_scadenza = db.Column(db.Date, nullable=False)
     studente = db.relationship('Studenti', backref='iscrizioni')
-    prova = db.relationship('Prove', backref='iscritti')
+    #prova = db.relationship('Prove', backref='lista_iscritti')
 
 class EsamiSvolti(db.Model):
-    id_esame = db.Column(db.Integer, db.ForeignKey('esami.id'), primary_key=True)
-    matricola_studente = db.Column(db.Integer, db.ForeignKey('studenti.matricola'), primary_key=True)
+    id_esame = db.deferred(db.Column(db.Integer, db.ForeignKey('esami.id', deferrable=True, initially="DEFERRED"), primary_key=True))
+    matricola_studente = db.deferred(db.Column(db.Integer, db.ForeignKey('studenti.matricola', deferrable=True, initially="DEFERRED"), primary_key=True))
     voto = db.Column(db.Integer, nullable=False)
     data = db.Column(db.Date, nullable=False)
-    studente = db.relationship("Studenti", backref="esami_svolti")
-    esame = db.relationship("Esami", backref="esami_sostenuti")
+    #studente = db.relationship("Studenti", backref="esami_svolti")
+    #esame = db.relationship("Esami", backref="esami_sostenuti")
 
 class ListaDocenti(db.Model):
-    id_esame = db.Column(db.Integer, db.ForeignKey('esami.id'), primary_key=True)
-    id_docente = db.Column(db.Integer, db.ForeignKey('docenti.id'), primary_key=True)
+    id_esame = db.deferred(db.Column(db.Integer, db.ForeignKey('esami.id', deferrable=True, initially="DEFERRED"), primary_key=True))
+    id_docente = db.deferred(db.Column(db.Integer, db.ForeignKey('docenti.id', deferrable=True, initially="DEFERRED"), primary_key=True))
     ruolo = db.Column(db.Enum(Ruolo),nullable = False)
-    docente = db.relationship("Docenti", backref="esami_docente")
-    esame = db.relationship("Esami", backref="esami_creati")
+    #docente = db.relationship("Docenti", backref="esami_docente")
+    #esame = db.relationship("Esami", backref="esami_creati")
+
 

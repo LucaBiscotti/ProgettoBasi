@@ -7,7 +7,7 @@
         <p>
             <label for="codice">Codice Insegnamento</label>
             <select type="text" name="inse" id="inse">
-                <<option value="" disabled selected>Seleziona esame</option>
+                <option value="" disabled selected>Seleziona esame</option>
                 {% for ins in insegnamenti %}
                     <option value="{{ ins.codice }}"> {{ ins.codice }} </option>
                 {% endfor %}
