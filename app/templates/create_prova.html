@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
 {% block name %}
-    <a href="{{url_for('routes.exam', esame_id=id)}}">←</a>
+    <a href="{{url_for('routes.exam', esame_id=id)}}">
+        <i class="gg-arrow-left-o"></i>
+    </a>
 {% endblock %}
 
 {% block content %}

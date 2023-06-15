@@ -86,7 +86,7 @@ def create_prova(id):
     tipo_scad_enum = TipoScadenza
     if request.method == 'POST':
         titolo = request.form['titolo']
-        percentuale = request.form['percentuale']
+        percentuale = int(request.form['percentuale'])
         tipo_voto = request.form['tipo_voto']
         aula = request.form['aula']
         durata = request.form['durata']
@@ -95,8 +95,9 @@ def create_prova(id):
         tipo_scadenza = request.form['tipo_scadenza']
         id_doc = current_user.id
         id_esame = id
+        perc = percentuale/100
         prova = Prove(titolo = titolo,
-                      percentuale = percentuale,
+                      percentuale = perc,
                       tipo_voto = tipo_voto,
                       aula = aula,
                       durata = durata,
@@ -135,12 +136,22 @@ def students(id):
 @login_required
 def student_exam(id):
     esame = Esami.query.get(id)
-    lista = Studenti.query.join(ListaIscritti, Studenti.matricola == ListaIscritti.matricola_studente).join(Prove, ListaIscritti.id_prova == Prove.id).filter(Prove.id == esame.id).add_columns(Prove.titolo,ListaIscritti.sostenuto,ListaIscritti.voto)
+    lista = Studenti.query.join(ListaIscritti, Studenti.matricola == ListaIscritti.matricola_studente).join(Prove, ListaIscritti.id_prova == Prove.id).join(EsamiSvolti, isouter=True).filter(Prove.id_esame == esame.id).add_columns(Prove.titolo,ListaIscritti.sostenuto,EsamiSvolti.voto)
     return render_template('student_exam.html',studenti = lista)
 
 @bp.route('/student_prove/<int:id>', methods=('GET', 'POST'))
 @login_required
 def student_prove(id):
+    if request.method == 'POST':
+        voto = request.form['voto']
+        mat = request.form['mat']
+        verbal = ListaIscritti.query.filter(ListaIscritti.id_prova == id, ListaIscritti.matricola_studente == mat).first()
+        verbal.voto = voto
+        verbal.sostenuto = True
+        verbal.accettato = True
+        db.session.add(verbal)
+        db.session.commit()
+        
     prova = Prove.query.get(id)
-    lista = Studenti.query.join(ListaIscritti, Studenti.matricola == ListaIscritti.matricola_studente).filter(ListaIscritti.id_prova == prova.id)
-    return render_template('student_prove.html',studenti = lista)
+    lista = Studenti.query.join(ListaIscritti, Studenti.matricola == ListaIscritti.matricola_studente).filter(ListaIscritti.id_prova == prova.id).add_columns(ListaIscritti.voto).add_columns(ListaIscritti.data_scadenza, ListaIscritti.accettato)
+    return render_template('student_prove.html',prova = prova, studenti = lista)

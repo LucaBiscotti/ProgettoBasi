@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" type = "text/css" href="../static/css/style.css">
     <script>
         var corsiByInsegnamentoUrl = "{{ url_for('routes.corsi_by_insegnamento') }}";
@@ -10,14 +11,18 @@
 
     <meta charset="UTF-8">
     <title>{% block title %} {% endblock %} - FlaskApp</title>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
 </head>
 <body>
     <nav>
         <img src="/static/img/logo.png" alt="logo">
-        <a>{% block name %} {% endblock %}</a>
+        <p>{% block name %} {% endblock %}</p>
         <a href="{{ url_for('routes.index') }}">I miei esami</a>
-        <a href="{{ url_for('routes.create') }}">Crea Esame</a>
+        {% block crea %} {% endblock %}
         <a href="{{ url_for('routes.students', id=0) }}">Cerca Studenti</a>
+        <div class="barra-verticale"></div>
         <a href="{{ url_for('routes.logout') }}">Logout</a>
     </nav>
     <br>

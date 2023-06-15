@@ -4,22 +4,24 @@
     Ciao {{ user.nome }}
 {% endblock %}
 
+{% block crea %}
+<a href="{{ url_for('routes.create') }}">Crea Esame</a>
+{% endblock %}
+
 {% block content %}
-    <h1 class="title">{% block title %} Esami {% endblock %}</h1>
-    <div class="content">
-        {% for corso in corsi %}
-                <div class="student">
-                    <a href="{{url_for('routes.exam', esame_id=corso.Esami.id)}}" class="student">
-                    <div>
-                        <p><b>A.A: {{ corso.Esami.anno_accademico }}</b></p>
-                        <b>
-                        <p class="name">{{ corso.Esami.codice_corso }} {{ corso.titolo }}</p>
-                        </b>
-                        <p>{{ corso.Esami.data_inizio }}</p>
-                    </div>
-                    </a>
-                    <a href="{{url_for('routes.student_exam', id=corso.Esami.id)}}">Lista iscritti</a>
+<h1>{% block title %} Esami {% endblock %}</h1>
+<div class="content">
+    {% for corso in corsi %}
+            <div class="student">
+                <a href="{{url_for('routes.exam', esame_id=corso.Esami.id)}}" class="student">
+                    <h6 class="name">{{ corso.Esami.codice_corso }}: {{ corso.titolo }}</h6>
+                </a>
+                <p> ANNO ACCADEMICO: {{ corso.Esami.anno_accademico }}</p>
+                <p>INIZIO DEL CORSO: {{ corso.Esami.data_inizio }}</p>
+                <div class="link">
+                    <b><a href="{{url_for('routes.student_exam', id=corso.Esami.id)}}">Lista iscritti</a></b>
                 </div>
-        {% endfor %}
-    </div>
+            </div>
+    {% endfor %}
+</div>
 {% endblock %}

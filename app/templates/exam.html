@@ -1,24 +1,32 @@
 {% extends 'base.html' %}
 
+{% block name %}
+    <a href="{{url_for('routes.index')}}">
+        <i class="gg-arrow-left-o"></i>
+    </a>
+{% endblock %}
+
+{% block crea %}
+    <a href="{{url_for('routes.create_prova', id=esame.id) }}">Crea Prova</a>
+{% endblock %}
 
 {% block content %}
-<nav>
-    <a>{% block title %} Prove {{ esame.codice_corso }} {% endblock %}</a>
-    <a href="{{url_for('routes.create_prova', id=esame.id)}}">Crea prova</a>
-</nav>
+
+
+<h1>{% block title %} Prove {{ esame.codice_corso }} {% endblock %}</h1>
 <div class="content">
     {% for prova in prove %}
         <div class="student">
             <a href="#" class="student">
-                <div>
-                    <p><b>{{ prova.titolo }}</b></p>
-                    <b>
-                        <p class="name">{{ prova.data_inizio }} {{ prova.tipo_scadenza.name }}</p>
-                    </b>
-                    <p>{{ prova.tipo_voto.name }}</p>
-                </div>
+                <h6>{{ prova.titolo }}</h6> 
             </a>
-            <a href="{{url_for('routes.student_prove', id=prova.id)}}">Lista iscritti</a>
+            <p class="name">DATA DELLA PROVA: {{ prova.data_inizio }} </p>
+            <p>DURATA: {{ prova.tipo_scadenza.name }}</p>
+            <p>TIPO VALUTAZIONE: {{ prova.tipo_voto.name }}</p>
+            <p>PERCENTUALE PROVA: {{ prova.percentuale * 100 }}%</p>
+            <div class="link">
+                <b><a href="{{url_for('routes.student_prove', id=prova.id)}}">Lista iscritti</a></b>
+            </div>
         </div>
     {% endfor %}
 </div>

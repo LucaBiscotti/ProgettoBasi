@@ -1,4 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import event
+from sqlalchemy.orm import object_session
 from werkzeug.security import generate_password_hash, check_password_hash
 from enum import Enum
 
@@ -100,14 +102,17 @@ class Prove(db.Model):
     lista_iscritti = db.relationship('ListaIscritti', backref='prova', lazy=True)
 
 class ListaIscritti(db.Model):
-    id_prova = db.deferred(db.Column(db.Integer, db.ForeignKey('prove.id', deferrable=True, initially="DEFERRED"), primary_key=True))
-    matricola_studente = db.deferred(db.Column(db.Integer, db.ForeignKey('studenti.matricola', deferrable=True, initially="DEFERRED"), primary_key=True))
+    id_prova = db.Column(db.Integer, db.ForeignKey('prove.id', deferrable=True, initially="DEFERRED"), primary_key=True)
+    #id_prova = db.deferred(db.Column(db.Integer, db.ForeignKey('prove.id', deferrable=True, initially="DEFERRED"), primary_key=True))
+    matricola_studente = db.Column(db.Integer, db.ForeignKey('studenti.matricola', deferrable=True, initially="DEFERRED"), primary_key=True)
+    #matricola_studente = db.deferred(db.Column(db.Integer, db.ForeignKey('studenti.matricola', deferrable=True, initially="DEFERRED"), primary_key=True))
     voto = db.Column(db.String)
     sostenuto = db.Column(db.Boolean,nullable=False)
     accettato = db.Column(db.Boolean)
     data_scadenza = db.Column(db.Date, nullable=False)
     studente = db.relationship('Studenti', backref='iscrizioni')
     #prova = db.relationship('Prove', backref='lista_iscritti')
+
 
 class EsamiSvolti(db.Model):
     id_esame = db.deferred(db.Column(db.Integer, db.ForeignKey('esami.id', deferrable=True, initially="DEFERRED"), primary_key=True))
@@ -125,3 +130,31 @@ class ListaDocenti(db.Model):
     #esame = db.relationship("Esami", backref="esami_creati")
 
 
+@event.listens_for(ListaIscritti, 'after_update')
+def check_prove_and_create_esami_svolti(target, value, oldvalue, initiator):
+    if value is not None and oldvalue is None:
+        session = object_session(target)
+
+        # Controllo delle prove per lo studente e l'esame corrispondenti
+        studente = target.iscritto
+        esame = target.prova.prova_esame
+        prove = (
+            session.query(Prove)
+            .join(ListaIscritti)
+            .filter(ListaIscritti.iscritto == studente, Prove.prova_esame == esame,ListaIscritti.accettato == True, Esami.anno_accademico == esame.anno_accademico)
+            .all()
+        )
+
+        # Calcolo della somma delle percentuali delle prove
+        somma_percentuali = sum(prova.percentuale for prova in prove)
+
+        # Se la somma delle percentuali arriva a 100, crea un elemento in EsamiSvolti
+        if somma_percentuali == 1:
+            esame_svolto = EsamiSvolti(
+                esame=esame,
+                studente=studente,
+                voto= sum(prova.ListaIscritti.voto * prova.percentuale for prova in prove),
+                data=None,  # Puoi impostare la data in base alle tue regole di business
+            )
+            session.add(esame_svolto)
+            session.commit()

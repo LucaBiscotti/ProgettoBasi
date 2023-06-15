@@ -1,24 +1,36 @@
 {% extends 'base.html' %}
 
+{% block name %}
+    <a href="{{url_for('routes.index')}}">
+        <i class="gg-arrow-left-o"></i>
+    </a>
+{% endblock %}
+
 {% block content %}
-    <h1 class="title">{% block title %} Students {% endblock %}</h1>
+    <h1>{% block title %} Studenti iscritti {% endblock %}</h1>
     <div class="content">
-        {% for studente in studenti %}
-            <div class="student">
-                <p><b>{{ studente.Studenti.matricola }}</b></p>
-                <b>
-                    <p class="name">{{ studente.Studenti.nome }} {{ studente.Studenti.cognome }}</p>
-                </b>
-                <p>{{ studente.Studenti.email }}</p>
-                <p>{{ studente.titolo }}</p>
-                <p>Voto:
-                    {% if studente.sostenuto: %}
-                        {{studente.voto}}
-                    {% else %}
+        <table>
+            <tr>
+              <th>Matricola</th>
+              <th>Nome e Cognome</th>
+              <th>Email</th>
+              <th>Voto</th>
+            </tr>
+            {% for studente in studenti %}
+            <tr>
+                <td><p>{{ studente.Studenti.matricola }}</p></td>
+                <td><p>{{ studente.Studenti.nome }} {{ studente.Studenti.cognome }}</p></td>
+                <td><p>{{ studente.Studenti.email }}</p></td>
+                <td><p>
+                    {% if studente.voto is none %}
                         Da sostenere
+                    {% else %}
+                        {{studente.voto}}
                     {% endif %}
                 </p>
-            </div>
-        {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
 {% endblock %}
