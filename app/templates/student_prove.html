@@ -12,7 +12,8 @@
         <table>
             <tr>
             <th>Matricola</th>
-            <th>Nome e Cognome</th>
+            <th>Cognome</th>
+            <th>Nome</th>
             <th>Email</th>
             <th>Scadenza</th>
             <th>Voto</th>
@@ -21,7 +22,8 @@
         {% for studente in studenti %}
         <tr>
             <td><p>{{ studente.Studenti.matricola }}</p></td>
-            <td><p>{{ studente.Studenti.nome }} {{ studente.Studenti.cognome }}</p></td>
+            <td><p>{{ studente.Studenti.cognome }}</p></td>
+            <td><p>{{ studente.Studenti.nome }} </p></td>
             <td><p>{{ studente.Studenti.email }}</p></td>
             <td><p>{{ studente.data_scadenza }}</p></td>
             <td>{% if studente.voto is none %}

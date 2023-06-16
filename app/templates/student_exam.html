@@ -11,16 +11,24 @@
     <div class="content">
         <table>
             <tr>
-              <th>Matricola</th>
-              <th>Nome e Cognome</th>
-              <th>Email</th>
-              <th>Voto</th>
+                <th>Matricola</th>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Email</th>
+                {% for prova in prove %}
+                    <th>{{ prova.titolo }}</th>
+                {% endfor %}
+                <th>Voto</th>
             </tr>
             {% for studente in studenti %}
             <tr>
-                <td><p>{{ studente.Studenti.matricola }}</p></td>
-                <td><p>{{ studente.Studenti.nome }} {{ studente.Studenti.cognome }}</p></td>
-                <td><p>{{ studente.Studenti.email }}</p></td>
+                <td><p>{{ studente['studente'].matricola }}</p></td>
+                <td><p>{{ studente['studente'].cognome }}</p></td>
+                <td><p>{{ studente['studente'].nome }}</p></td>
+                <td><p>{{ studente['studente'].email }}</p></td>
+                {% for i in studente['fatto']: %}
+                    <td><p>{{ i }}</p></td>
+                {% endfor %}
                 <td><p>
                     {% if studente.voto is none %}
                         Da sostenere

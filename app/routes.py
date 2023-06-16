@@ -135,9 +135,31 @@ def students(id):
 @bp.route('/student_exam/<int:id>', methods=('GET', 'POST'))
 @login_required
 def student_exam(id):
+    from itertools import groupby
+
     esame = Esami.query.get(id)
-    lista = Studenti.query.join(ListaIscritti, Studenti.matricola == ListaIscritti.matricola_studente).join(Prove, ListaIscritti.id_prova == Prove.id).join(EsamiSvolti, isouter=True).filter(Prove.id_esame == esame.id).add_columns(Prove.titolo,ListaIscritti.sostenuto,EsamiSvolti.voto)
-    return render_template('student_exam.html',studenti = lista)
+    prove = Prove.query.filter(Prove.id_esame == id).all()
+    lista = Studenti.query.join(ListaIscritti, Studenti.matricola == ListaIscritti.matricola_studente).join(Prove, ListaIscritti.id_prova == Prove.id).join(EsamiSvolti, isouter=True).filter(Prove.id_esame == esame.id).add_columns(Prove.titolo,ListaIscritti.id_prova,EsamiSvolti.voto)
+    
+    studenti = []
+    lista_ordinata = sorted(lista, key=lambda x: x.Studenti.matricola)  # Ordina per matricola
+    for matricola, group in groupby(lista_ordinata, key=lambda x: x.Studenti.matricola):  # Raggruppa per matricola
+        sos = [0] * len(prove)  # Crea una lista di zeri per le prove
+        voto = None
+        for row in group:
+            for i, prova in enumerate(prove):
+                if row.id_prova == prova.id:
+                    sos[i] = 1
+            if row.voto is not None:
+                voto = row.voto
+
+        studenti.append({
+            'studente': row.Studenti,
+            'fatto': sos,
+            'voto': voto
+        })
+
+    return render_template('student_exam.html',studenti = studenti, prove = prove)
 
 @bp.route('/student_prove/<int:id>', methods=('GET', 'POST'))
 @login_required
