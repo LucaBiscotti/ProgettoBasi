@@ -17,11 +17,13 @@
 <div class="content">
     {% for prova in prove %}
         <div class="student">
-            <a href="#" class="student">
+            <a href="{{url_for('routes.edit_prova', id=prova.id)}}" class="student">
                 <h6>{{ prova.titolo }}</h6> 
             </a>
             <p class="name">DATA DELLA PROVA: {{ prova.data_inizio }} </p>
-            <p>DURATA: {{ prova.tipo_scadenza.name }}</p>
+            <p>DURATA: {{ prova.durata }} minuti</p>
+            <p>AULA: {{ prova.aula }}</p>
+            <p>TIPO DI SCADENZA: {{ prova.tipo_scadenza.name }}</p>
             <p>TIPO VALUTAZIONE: {{ prova.tipo_voto.name }}</p>
             <p>PERCENTUALE PROVA: {{ prova.percentuale * 100 }}%</p>
             <div class="link">

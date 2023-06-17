@@ -177,3 +177,20 @@ def student_prove(id):
     prova = Prove.query.get(id)
     lista = Studenti.query.join(ListaIscritti, Studenti.matricola == ListaIscritti.matricola_studente).filter(ListaIscritti.id_prova == prova.id).add_columns(ListaIscritti.voto).add_columns(ListaIscritti.data_scadenza, ListaIscritti.accettato)
     return render_template('student_prove.html',prova = prova, studenti = lista)
+
+@bp.route('/edit_prova/<int:id>', methods=('GET', 'POST'))
+@login_required
+def edit_prova(id):
+    if request.method == 'POST':
+        edit = Prove.query.get(id)
+        edit.aula = request.form['aula']
+        edit.durata = request.form['durata']
+        data = request.form['data_i']
+        edit.data_inizio = date.fromisoformat(data)
+        db.session.add(edit)
+        db.session.commit()
+        return redirect(url_for('routes.exam', esame_id = edit.id_esame))
+    tipo_voto_enum = TipoVoto
+    tipo_scad_enum = TipoScadenza
+    prova = Prove.query.get(id)
+    return render_template('edit_prova.html', scad = tipo_scad_enum, voto = tipo_voto_enum, prova = prova)
