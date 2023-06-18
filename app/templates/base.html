@@ -21,7 +21,7 @@
         <p>{% block name %} {% endblock %}</p>
         <a href="{{ url_for('routes.index') }}">I miei esami</a>
         {% block crea %} {% endblock %}
-        <a href="{{ url_for('routes.students', id=0) }}">Cerca Studenti</a>
+        <a href="{{ url_for('routes.students') }}">Cerca Studenti</a>
         <div class="barra-verticale"></div>
         <a href="{{ url_for('routes.logout') }}">Logout</a>
     </nav>

@@ -2,22 +2,32 @@
 
 {% block content %}
     <h1 class="title">{% block title %} Studenti {% endblock %}</h1>
+
     <div class="content">
         <table>
+            <form action="{{ url_for('routes.students') }}" method="GET">
+                <tr>
+                    <th><input type="text" name="filtro_matricola" value="{{filtro_matricola}}" placeholder="Filtra per matricola"></th>
+                    <th><input type="text" name="filtro_cognome" value="{{filtro_cognome}}" placeholder="Filtra per cognome"></th>
+                    <th><input type="text" name="filtro_nome" value="{{filtro_nome}}" placeholder="Filtra per nome"></th>
+                    <th><input type="text" name="filtro_email" value="{{filtro_email}}" placeholder="Filtra per email">
+                    <input type="submit" value="Filtra"></th>
+                </tr>
+            </form>
             <tr>
-            <th>Matricola</th>
-            <th>Cognome</th>
-            <th>Nome</th>
-            <th>Email</th>
+                <th>Matricola</th>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Email</th>
             </tr>
-        {% for studente in studenti %}
-        <tr>
-            <td><p>{{ studente.matricola }}</p></td>
-            <td><p>{{ studente.cognome }}</p></td>
-            <td><p>{{ studente.nome }} </p></td>
-            <td><p>{{ studente.email }}</p></td>
-        </tr>
-        {% endfor %}
+            {% for studente in studenti %}
+                <tr>
+                    <td><p>{{ studente.matricola }}</p></td>
+                    <td><p>{{ studente.cognome }}</p></td>
+                    <td><p>{{ studente.nome }}</p></td>
+                    <td><p>{{ studente.email }}</p></td>
+                </tr>
+            {% endfor %}
         </table>
     </div>
 {% endblock %}

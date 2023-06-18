@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{% block title %} Studenti iscritti {% endblock %}</h1>
+    <h1>{% block title %} Studenti iscritti a {{ prova.titolo }}{% endblock %}</h1>
     <div class="content">
         <table>
             <tr>
@@ -67,12 +67,12 @@
                                     {% for i in range(13)%}
                                         <option value="{{i + 18}}">{{i + 18}}</option>
                                     {% endfor %}
-                                    <option value="L">30L</option>
+                                    <option value="30L">30L</option>
                                 </select>
                             {% else %}
                                 <select name="voto" id="voto">
-                                    <option value="ido">IDONEO</option>
-                                    <option value="na">NON IDONEO</option>
+                                    <option value="idoneo">IDONEO</option>
+                                    <option value="non idoneo">NON IDONEO</option>
                                 </select>
                     {% endif %}
                     </div>

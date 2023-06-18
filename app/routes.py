@@ -125,11 +125,27 @@ def exam(esame_id):
     return render_template('exam.html',esame = esame, prove=prove)
 
 
-@bp.route('/students/<int:id>', methods=('GET', 'POST'))
+@bp.route('/students', methods=['GET'])
 @login_required
-def students(id):
-    lista = Studenti.query.all()
-    return render_template('students.html', studenti=lista)
+def students():
+    filtro_matricola = request.args.get('filtro_matricola')
+    filtro_cognome = request.args.get('filtro_cognome')
+    filtro_nome = request.args.get('filtro_nome')
+    filtro_email = request.args.get('filtro_email')
+
+    lista = Studenti.query
+
+    if filtro_matricola:
+        lista = lista.filter(Studenti.matricola.like(f"%{filtro_matricola}%"))
+    if filtro_cognome:
+        lista = lista.filter(Studenti.cognome.like(f"%{filtro_cognome}%"))
+    if filtro_nome:
+        lista = lista.filter(Studenti.nome.like(f"%{filtro_nome}%"))
+    if filtro_email:
+        lista = lista.filter(Studenti.email.like(f"%{filtro_email}%"))
+
+    studenti = lista.all()
+    return render_template('students.html', studenti=lista, filtro_matricola = filtro_matricola, filtro_cognome = filtro_cognome, filtro_nome = filtro_nome, filtro_email = filtro_email)
 
 
 @bp.route('/student_exam/<int:id>', methods=('GET', 'POST'))
