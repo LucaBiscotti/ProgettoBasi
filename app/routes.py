@@ -122,7 +122,8 @@ def corsi_by_insegnamento():
 def exam(esame_id):
     esame = Esami.query.get(esame_id)
     prove = Prove.query.filter(Prove.id_esame == esame.id).all()
-    return render_template('exam.html',esame = esame, prove=prove)
+    error = request.args.get('error')
+    return render_template('exam.html',esame = esame, prove=prove, error=error)
 
 
 @bp.route('/students', methods=['GET'])
@@ -132,6 +133,15 @@ def students():
     filtro_cognome = request.args.get('filtro_cognome')
     filtro_nome = request.args.get('filtro_nome')
     filtro_email = request.args.get('filtro_email')
+
+    if(filtro_matricola is None):
+        filtro_matricola = ""
+    if(filtro_cognome is None):
+        filtro_cognome = ""
+    if(filtro_nome is None):
+        filtro_nome = ""
+    if(filtro_email is None):
+        filtro_email = ""
 
     lista = Studenti.query
 
@@ -145,7 +155,7 @@ def students():
         lista = lista.filter(Studenti.email.like(f"%{filtro_email}%"))
 
     studenti = lista.all()
-    return render_template('students.html', studenti=lista, filtro_matricola = filtro_matricola, filtro_cognome = filtro_cognome, filtro_nome = filtro_nome, filtro_email = filtro_email)
+    return render_template('students.html', studenti=studenti, filtro_matricola = filtro_matricola, filtro_cognome = filtro_cognome, filtro_nome = filtro_nome, filtro_email = filtro_email)
 
 
 @bp.route('/student_exam/<int:id>', methods=('GET', 'POST'))
@@ -199,6 +209,7 @@ def student_prove(id):
 def edit_prova(id):
     if request.method == 'POST':
         edit = Prove.query.get(id)
+        edit.titolo = request.form['titolo']
         edit.aula = request.form['aula']
         edit.durata = request.form['durata']
         data = request.form['data_i']
@@ -208,5 +219,56 @@ def edit_prova(id):
         return redirect(url_for('routes.exam', esame_id = edit.id_esame))
     tipo_voto_enum = TipoVoto
     tipo_scad_enum = TipoScadenza
+
     prova = Prove.query.get(id)
+    if int(current_user.id) != prova.id_docente:
+        return redirect(url_for('routes.exam', esame_id=prova.id_esame, error = True))
     return render_template('edit_prova.html', scad = tipo_scad_enum, voto = tipo_voto_enum, prova = prova)
+
+@bp.route('/edit_profs/<int:esame_id>', methods=('GET', 'POST'))
+@login_required
+def edit_profs(esame_id):
+    if request.method == 'POST':
+        docente_id = request.form['docente_id']
+        doc = ListaDocenti.query.filter(ListaDocenti.id_docente == docente_id, ListaDocenti.id_esame == esame_id).first()
+        db.session.delete(doc)
+        db.session.commit()
+    esame = Esami.query.get(esame_id)
+    docenti = Docenti.query.join(ListaDocenti, ListaDocenti.id_docente == Docenti.id).filter(ListaDocenti.id_esame == esame_id).add_columns(ListaDocenti.ruolo).all()
+    return render_template('edit_profs.html',esame = esame, docenti=docenti)
+
+@bp.route('/add_profs/<int:esame_id>', methods=('GET', 'POST'))
+@login_required
+def add_profs(esame_id):
+    esame = Esami.query.get(esame_id)
+
+    if request.method == 'POST':
+        docente_id = request.form['docente_id']
+        lista_docente = ListaDocenti(id_esame=esame_id, id_docente=docente_id, ruolo=Ruolo.membro)
+        db.session.add(lista_docente)
+        db.session.commit()
+        return redirect(url_for('routes.edit_profs', esame_id=esame.id))
+
+    filtro_cognome = request.args.get('filtro_cognome')
+    filtro_nome = request.args.get('filtro_nome')
+
+    if(filtro_cognome is None):
+        filtro_cognome = ""
+    if(filtro_nome is None):
+        filtro_nome = ""
+
+    ## Query per prendere tutti i docenti che non appartengono a quell'esame
+    lista = Docenti.query.filter(
+        ~(Docenti.id.in_(
+                db.session.query(ListaDocenti.id_docente).filter(ListaDocenti.id_esame == esame_id)
+        ))
+    )
+
+    if filtro_cognome:
+        lista = lista.filter(Docenti.cognome.like(f"%{filtro_cognome}%"))
+    if filtro_nome:
+        lista = lista.filter(Docenti.nome.like(f"%{filtro_nome}%"))
+
+    profs = lista.all()
+
+    return render_template('add_profs.html',esame = esame, profs=profs, filtro_cognome = filtro_cognome, filtro_nome = filtro_nome)

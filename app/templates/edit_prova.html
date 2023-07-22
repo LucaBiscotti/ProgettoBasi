@@ -12,7 +12,7 @@
 <form method="post">
     <p>
         <label>Titolo</label>
-        <input type="text" name="titolo" id="titolo" value="{{prova.titolo}}" readonly></input>
+        <input type="text" name="titolo" id="titolo" value="{{prova.titolo}}"></input>
       </p>
     <p>
         <label>Percentuale</label>
@@ -40,23 +40,19 @@
     </p>
     <p>
         <label>Tipo Voto</label>
-        <select type="text" name="tipo_voto" value="{{prova.tipo_voto}}">
-            {% for tipo in voto %}
-                <option value="{{ tipo.name }}">{{ tipo.value }}</option>
-            {% endfor %}
-        </select>
+        <input type="text" value="{{prova.tipo_voto.value}}" readonly></input>
     </p>
     <p>
         <label>Tipo Scadenza Voto</label>
-        <select type="text" name="tipo_scadenza" value="{{prova.tipo_scadenza}}">
-            {% for tipo in scad %}
-                <option value="{{ tipo.name }}">{{ tipo.value }}</option>
-            {% endfor %}
-        </select>
+        <input type="text" value="{{prova.tipo_scadenza.value}}" readonly></input>
     </p>
 
     <p>
         <button type="submit">Modifica</button>
+        <button type="reset">Reset</button>
+        <button type="button">
+            <a href="{{url_for('routes.exam', esame_id=prova.id_esame)}}">Chiudi</a>
+        </button>
     </p>
 </form>
 

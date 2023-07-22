@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block name %}
+    <a href="{{url_for('routes.edit_profs', esame_id=esame.id)}}">
+        <i class="gg-arrow-left-o"></i>
+    </a>
+{% endblock %}
+
+{% block content %}
+
+<h1 class="title">{% block title %} Docenti {% endblock %}</h1>
+
+    <div class="content">
+        <table>
+            <form action="{{ url_for('routes.add_profs', esame_id=esame.id) }}" method="GET">
+                <tr>
+                    <th><input type="text" name="filtro_cognome" value="{{filtro_cognome}}" placeholder="Filtra per cognome"></th>
+                    <th><input type="text" name="filtro_nome" value="{{filtro_nome}}" placeholder="Filtra per nome"></th>
+                    <th><input type="submit" value="Filtra"></input></th>
+                </tr>
+            </form>
+            <tr>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Aggiungi</th>
+            </tr>
+            <form method="POST">
+                {% for prof in profs %}
+                    <tr>
+                        <td><p>{{ prof.cognome }}</p></td>
+                        <td><p>{{ prof.nome }}</p></td>
+                        <td>
+                            <button type="submit" name="docente_id" value="{{ prof.id }}">Aggiungi</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </form>
+        </table>
+    </div>
+
+{% endblock %}
