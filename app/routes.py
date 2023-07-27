@@ -33,6 +33,13 @@ def logout():
         logout_user()
     return redirect(url_for('routes.login', login_url=request.path))
 
+def permission(exam):
+    control = ListaDocenti.query.filter(ListaDocenti.id_docente == int(current_user.id), ListaDocenti.id_esame == exam).first()
+    print(control)
+    if control is None:
+        return False
+    return True
+
 
 #Routes
 
@@ -82,6 +89,8 @@ def create():
 @bp.route('/create_prova/<int:id>', methods=('GET', 'POST'))
 @login_required
 def create_prova(id):
+    if not permission(id):
+        return redirect(url_for('routes.index'))
     tipo_voto_enum = TipoVoto
     tipo_scad_enum = TipoScadenza
     if request.method == 'POST':
@@ -120,6 +129,8 @@ def corsi_by_insegnamento():
 @bp.route('/exam/<int:esame_id>', methods=('GET', 'POST'))
 @login_required
 def exam(esame_id):
+    if not permission(esame_id):
+        return redirect(url_for('routes.index'))
     esame = Esami.query.get(esame_id)
     prove = Prove.query.filter(Prove.id_esame == esame.id).all()
     error = request.args.get('error')
@@ -161,35 +172,66 @@ def students():
 @bp.route('/student_exam/<int:id>', methods=('GET', 'POST'))
 @login_required
 def student_exam(id):
+
+    if not permission(id):
+        return redirect(url_for('routes.index'))
+
+    if request.method == 'POST':
+        vot = request.form['voto']
+        matricola = request.form['mat']
+        from datetime import datetime
+        data = datetime.now()
+        verb = EsamiSvolti(id_esame = id,
+                           matricola_studente = matricola,
+                           voto = vot,
+                           data = data)
+        db.session.add(verb)
+        db.session.commit()
+
     from itertools import groupby
 
     esame = Esami.query.get(id)
     prove = Prove.query.filter(Prove.id_esame == id).all()
-    lista = Studenti.query.join(ListaIscritti, Studenti.matricola == ListaIscritti.matricola_studente).join(Prove, ListaIscritti.id_prova == Prove.id).join(EsamiSvolti, isouter=True).filter(Prove.id_esame == esame.id).add_columns(Prove.titolo,ListaIscritti.id_prova,EsamiSvolti.voto)
+    lista = Studenti.query.join(ListaIscritti, Studenti.matricola == ListaIscritti.matricola_studente).join(Prove, ListaIscritti.id_prova == Prove.id).join(EsamiSvolti, isouter=True).filter(Prove.id_esame == esame.id).add_columns(Prove.titolo,ListaIscritti.id_prova,EsamiSvolti.voto.label("totale"), ListaIscritti.voto)
     
     studenti = []
     lista_ordinata = sorted(lista, key=lambda x: x.Studenti.matricola)  # Ordina per matricola
     for matricola, group in groupby(lista_ordinata, key=lambda x: x.Studenti.matricola):  # Raggruppa per matricola
+        print("LOL")
+        voto = [0] * len(prove)
         sos = [0] * len(prove)  # Crea una lista di zeri per le prove
-        voto = None
         for row in group:
+            print(row)
             for i, prova in enumerate(prove):
+                print(i)
+                test = 0
                 if row.id_prova == prova.id:
                     sos[i] = 1
-            if row.voto is not None:
-                voto = row.voto
+                    test = 1
+                    print("Trovato")
+                if row.voto is not None and test == 1:
+                    voto[i] = row.voto
+                    print("trovato " + row.voto)
+                else:
+                    if(voto[i] == 0):
+                        voto[i] = "Non sostenuto"
+                    print(row.voto)
+                print(voto)
 
         studenti.append({
             'studente': row.Studenti,
+            'totale': row.totale,
             'fatto': sos,
             'voto': voto
         })
-
     return render_template('student_exam.html',studenti = studenti, prove = prove)
 
 @bp.route('/student_prove/<int:id>', methods=('GET', 'POST'))
 @login_required
 def student_prove(id):
+    if not permission(id):
+        return redirect(url_for('routes.index'))
+
     if request.method == 'POST':
         voto = request.form['voto']
         mat = request.form['mat']
@@ -207,6 +249,9 @@ def student_prove(id):
 @bp.route('/edit_prova/<int:id>', methods=('GET', 'POST'))
 @login_required
 def edit_prova(id):
+    if not permission(id):
+        return redirect(url_for('routes.index'))
+
     if request.method == 'POST':
         edit = Prove.query.get(id)
         edit.titolo = request.form['titolo']
@@ -228,6 +273,9 @@ def edit_prova(id):
 @bp.route('/edit_profs/<int:esame_id>', methods=('GET', 'POST'))
 @login_required
 def edit_profs(esame_id):
+    if not permission(esame_id):
+        return redirect(url_for('routes.index'))
+
     if request.method == 'POST':
         docente_id = request.form['docente_id']
         doc = ListaDocenti.query.filter(ListaDocenti.id_docente == docente_id, ListaDocenti.id_esame == esame_id).first()
@@ -240,6 +288,9 @@ def edit_profs(esame_id):
 @bp.route('/add_profs/<int:esame_id>', methods=('GET', 'POST'))
 @login_required
 def add_profs(esame_id):
+    if not permission(esame_id):
+        return redirect(url_for('routes.index'))
+    
     esame = Esami.query.get(esame_id)
 
     if request.method == 'POST':
