@@ -123,15 +123,15 @@ class EsamiSvolti(db.Model):
     #esame = db.relationship("Esami", backref="esami_sostenuti")
 
 class ListaDocenti(db.Model):
-    id_esame = db.deferred(db.Column(db.Integer, db.ForeignKey('esami.id', deferrable=True, initially="DEFERRED"), primary_key=True))
-    id_docente = db.deferred(db.Column(db.Integer, db.ForeignKey('docenti.id', deferrable=True, initially="DEFERRED"), primary_key=True))
-    ruolo = db.Column(db.Enum(Ruolo),nullable = False)
-    #docente = db.relationship("Docenti", backref="esami_docente")
-    #esame = db.relationship("Esami", backref="esami_creati")
+    id_esame = db.Column(db.Integer, db.ForeignKey('esami.id', deferrable=True, initially="DEFERRED"), primary_key=True)
+    id_docente = db.Column(db.Integer, db.ForeignKey('docenti.id', deferrable=True, initially="DEFERRED"), primary_key=True)
+    ruolo = db.Column(db.Enum(Ruolo), nullable=False)
+
+    esame = db.relationship('Esami', backref='lista_docenti')
 
 
 @event.listens_for(ListaIscritti, 'after_update')
-def check_prove_and_create_esami_svolti(target, value, oldvalue, initiator):
+def check_prove_and_create_esami_svolti(target, value, oldvalue, initiator=None):
     if value is not None and oldvalue is None:
         session = object_session(target)
 

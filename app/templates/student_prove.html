@@ -7,12 +7,13 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{% block title %} Studenti iscritti {% endblock %}</h1>
+    <h1>{% block title %} Studenti iscritti a {{ prova.titolo }}{% endblock %}</h1>
     <div class="content">
         <table>
             <tr>
             <th>Matricola</th>
-            <th>Nome e Cognome</th>
+            <th>Cognome</th>
+            <th>Nome</th>
             <th>Email</th>
             <th>Scadenza</th>
             <th>Voto</th>
@@ -21,7 +22,8 @@
         {% for studente in studenti %}
         <tr>
             <td><p>{{ studente.Studenti.matricola }}</p></td>
-            <td><p>{{ studente.Studenti.nome }} {{ studente.Studenti.cognome }}</p></td>
+            <td><p>{{ studente.Studenti.cognome }}</p></td>
+            <td><p>{{ studente.Studenti.nome }} </p></td>
             <td><p>{{ studente.Studenti.email }}</p></td>
             <td><p>{{ studente.data_scadenza }}</p></td>
             <td>{% if studente.voto is none %}
@@ -65,12 +67,12 @@
                                     {% for i in range(13)%}
                                         <option value="{{i + 18}}">{{i + 18}}</option>
                                     {% endfor %}
-                                    <option value="L">30L</option>
+                                    <option value="30L">30L</option>
                                 </select>
                             {% else %}
                                 <select name="voto" id="voto">
-                                    <option value="ido">IDONEO</option>
-                                    <option value="na">NON IDONEO</option>
+                                    <option value="idoneo">IDONEO</option>
+                                    <option value="non idoneo">NON IDONEO</option>
                                 </select>
                     {% endif %}
                     </div>

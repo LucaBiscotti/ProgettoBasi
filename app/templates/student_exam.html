@@ -11,26 +11,74 @@
     <div class="content">
         <table>
             <tr>
-              <th>Matricola</th>
-              <th>Nome e Cognome</th>
-              <th>Email</th>
-              <th>Voto</th>
+                <th>Matricola</th>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Email</th>
+                {% for prova in prove %}
+                    <th>{{ prova.titolo }}</th>
+                {% endfor %}
+                <th>Voto</th>
             </tr>
             {% for studente in studenti %}
             <tr>
-                <td><p>{{ studente.Studenti.matricola }}</p></td>
-                <td><p>{{ studente.Studenti.nome }} {{ studente.Studenti.cognome }}</p></td>
-                <td><p>{{ studente.Studenti.email }}</p></td>
+                <td><p>{{ studente['studente'].matricola }}</p></td>
+                <td><p>{{ studente['studente'].cognome }}</p></td>
+                <td><p>{{ studente['studente'].nome }}</p></td>
+                <td><p>{{ studente['studente'].email }}</p></td>
+                {% for i in studente['voto']: %}
+                    <td><p>{{ i }}</p></td>
+                {% endfor %}
                 <td><p>
-                    {% if studente.voto is none %}
-                        Da sostenere
+                    <!-- Da sistemare il controllo sul voto -->
+                    {% if studente['totale'] == none %}
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong" data-matricola="{{ studente['studente'].matricola }}">
+                            Verbalizza
+                        </button>
                     {% else %}
-                        {{studente.voto}}
+                        {{ studente['totale'] }}
                     {% endif %}
-                </p>
-                </td>
+                </p></td>
             </tr>
             {% endfor %}
         </table>
     </div>
+
+    <!-- Modal -->
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLongTitle">Matricola:<h3 id="matricola"></h3></h3>
+                    <input type="hidden" name="mat" id="mat">
+                </div>
+                <div class="modal-body">
+                    <label>Inserisci:</label>
+                    <select name="voto" id="voto">
+                        {% for i in range(13)%}
+                            <option value="{{i + 18}}">{{i + 18}}</option>
+                        {% endfor %}
+                        <option value="30L">30L</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+                    <button type="submit" class="btn btn-primary">Verbalizza</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+  <script>
+    $(document).on('show.bs.modal', '#exampleModalLong', function (event) {
+    var button = $(event.relatedTarget);
+    var matricola = button.data('matricola');
+    var modal = $(this);
+    modal.find('#matricola').text(matricola);
+    modal.find('#mat').val(matricola);
+    });
+  </script>
+
 {% endblock %}

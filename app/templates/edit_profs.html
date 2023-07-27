@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block name %}
+    <a href="{{url_for('routes.exam', esame_id=esame.id)}}">
+        <i class="gg-arrow-left-o"></i>
+    </a>
+{% endblock %}
+
+{% block content %}
+<h1 class="title">{% block title %} Membri di {{esame.codice_corso}} {% endblock %}</h1>
+
+    <div class="content">
+        <table>
+            <tr>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Ruolo</th>
+                <th>Rimuovi</th>
+            </tr>
+            <form action="{{ url_for('routes.edit_profs', esame_id=esame.id) }}" method="post">
+                {% for doc in docenti %}
+                    <tr>
+                        <td><p>{{ doc.Docenti.cognome }}</p></td>
+                        <td><p>{{ doc.Docenti.nome }}</p></td>
+                        <td><p>{{ doc.Docenti.email }}</p></td>
+                        <td><p>{{ doc.ruolo.value }}</p></td>
+                        <td>{% if doc.ruolo.value == "PRESIDENTE" %}
+                                <button type="button" class="btn btn-primary" disabled>
+                                    Rimuovi
+                                </button>
+                            {% else %}
+                                <button type="submit" class="btn btn-primary" name="docente_id" value="{{ doc.Docenti.id }}">
+                                    Rimuovi
+                                </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </form>
+        </table>
+
+        <a href="{{url_for('routes.add_profs', esame_id=esame.id)}}" type="button">
+            Aggiungi membro
+        </button>
+    </div>
+
+{% endblock %}

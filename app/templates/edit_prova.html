@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block name %}
+    <a href="{{url_for('routes.exam', esame_id=prova.id_esame)}}">
+        <i class="gg-arrow-left-o"></i>
+    </a>
+{% endblock %}
+
+
+{% block content %}
+<h1 style="width: 100%">{% block title %} Modifica {{prova.titolo}} {% endblock %}</h1>
+<form method="post">
+    <p>
+        <label>Titolo</label>
+        <input type="text" name="titolo" id="titolo" value="{{prova.titolo}}"></input>
+      </p>
+    <p>
+        <label>Percentuale</label>
+        <input type="number" name="percentuale"
+            value="{{prova.percentuale * 100}}" readonly>
+        </input>
+    </p>
+    <p>
+        <label for="aula">Aula</label>
+        <input type="text" name="aula"
+            value="{{prova.aula}}">
+        </input>
+    </p>
+    <p>
+        <label>Durata (in minuti)</label>
+        <input type="number" name="durata"
+            value="{{prova.durata}}">
+        </input>
+    </p>
+    <p>
+        <label for="data_i">Data svolgimento</label>
+        <input type="date" name="data_i"
+            value="{{prova.data_inizio}}">
+        </input>
+    </p>
+    <p>
+        <label>Tipo Voto</label>
+        <input type="text" value="{{prova.tipo_voto.value}}" readonly></input>
+    </p>
+    <p>
+        <label>Tipo Scadenza Voto</label>
+        <input type="text" value="{{prova.tipo_scadenza.value}}" readonly></input>
+    </p>
+
+    <p>
+        <button type="submit">Modifica</button>
+        <button type="reset">Reset</button>
+        <button type="button">
+            <a href="{{url_for('routes.exam', esame_id=prova.id_esame)}}">Chiudi</a>
+        </button>
+    </p>
+</form>
+
+{% endblock %}

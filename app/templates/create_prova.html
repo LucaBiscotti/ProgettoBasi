@@ -8,7 +8,7 @@
 
 {% block content %}
     <h1 style="width: 100%">{% block title %} Crea nuova prova {% endblock %}</h1>
-    <form method="post">
+    <form method="post" onsubmit="return validateForm()">
         <p>
             <label>Titolo</label>
             <input type="text" name="titolo" id="titolo"></input>
@@ -56,6 +56,33 @@
 
         <p>
             <button type="submit">Crea</button>
+            <button type="reset">Reset</button>
+            <button type="button">
+                <a href="{{url_for('routes.exam', esame_id=id)}}">Chiudi</a>
+            </button>
         </p>
     </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.js"></script>
+
+    <script>
+        function validateForm() {
+            var titolo = document.getElementById("titolo").value;
+            var percentuale = document.getElementsByName("percentuale")[0].value;
+            var aula = document.getElementsByName("aula")[0].value;
+            var durata = document.getElementsByName("durata")[0].value;
+            var data_i = document.getElementsByName("data_i")[0].value;
+            var tipo_voto = document.getElementsByName("tipo_voto")[0].value;
+            var tipo_scadenza = document.getElementsByName("tipo_scadenza")[0].value;
+    
+            if (titolo === "" || percentuale === "" || aula === "" || durata === "" || data_i === "" || tipo_voto === "" || tipo_scadenza === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Si prega di compilare tutti i campi.',
+                });
+                return false;
+            }
+        }
+    </script>
 {% endblock %}

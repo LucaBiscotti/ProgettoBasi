@@ -162,6 +162,32 @@ form p button:hover {
     background-color: #dc1327;
 }
 
+div button {
+    cursor: default;
+    color: white;
+    text-transform: uppercase;
+    width: 30%;
+    height: 40px;
+    margin-top: 1%;
+    margin-left: 25%;
+    padding: 7px;
+    outline: none;
+    border: none;
+    background-color: #de3545;
+    border-radius: 30px;
+    text-align: center;
+}
+
+div button:hover {
+    border: 2px solid black;  
+    background-color: #dc1327;
+}
+
+div h2{
+    text-align: center;
+    margin-top: 10%;
+}
+
 ::placeholder {
     font-size: small;
     padding-left: 7px;
@@ -223,3 +249,4 @@ table tr:nth-child(even){
     bottom: 8px;
     background: currentColor
 }
+
