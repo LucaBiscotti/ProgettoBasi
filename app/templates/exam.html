@@ -12,15 +12,14 @@
 
 {% block content %}
 
-
 <h1>{% block title %} Prove {{ esame.codice_corso }} {% endblock %}</h1>
 <div class="content">
     {% for prova in prove %}
         <div class="student">
             <a href="#" class="student">
-                <h6>{{ prova.titolo }}</h6> 
+                <h4>{{ prova.titolo }}</h4> 
             </a>
-            <p class="name">DATA DELLA PROVA: {{ prova.data_inizio }} </p>
+            <p>DATA DELLA PROVA: {{ prova.data_inizio }} </p>
             <p>DURATA: {{ prova.tipo_scadenza.name }}</p>
             <p>TIPO VALUTAZIONE: {{ prova.tipo_voto.name }}</p>
             <p>PERCENTUALE PROVA: {{ prova.percentuale * 100 }}%</p>

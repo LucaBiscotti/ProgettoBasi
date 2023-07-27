@@ -14,7 +14,7 @@
     {% for corso in corsi %}
             <div class="student">
                 <a href="{{url_for('routes.exam', esame_id=corso.Esami.id)}}" class="student">
-                    <h6 class="name">{{ corso.Esami.codice_corso }}: {{ corso.titolo }}</h6>
+                    <h4>{{ corso.Esami.codice_corso }}: {{ corso.titolo }}</h4>
                 </a>
                 <p> ANNO ACCADEMICO: {{ corso.Esami.anno_accademico }}</p>
                 <p>INIZIO DEL CORSO: {{ corso.Esami.data_inizio }}</p>
