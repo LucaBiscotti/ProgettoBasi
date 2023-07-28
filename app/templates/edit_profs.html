@@ -18,7 +18,7 @@
                 <th>Ruolo</th>
                 <th>Rimuovi</th>
             </tr>
-            <form action="{{ url_for('routes.edit_profs', esame_id=esame.id) }}" method="post">
+            <form action="{{ url_for('routes.edit_profs', esame_id=esame.id) }}" method="post" id="addForm">
                 {% for doc in docenti %}
                     <tr>
                         <td><p>{{ doc.Docenti.cognome }}</p></td>
@@ -30,7 +30,7 @@
                                     Rimuovi
                                 </button>
                             {% else %}
-                                <button type="submit" class="btn btn-primary" name="docente_id" value="{{ doc.Docenti.id }}">
+                                <button type="button" onclick="showConfirmation('{{ doc.Docenti.id }}')" class="btn btn-primary">
                                     Rimuovi
                                 </button>
                             {% endif %}
@@ -44,5 +44,31 @@
             Aggiungi membro
         </button>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.js"></script>
+
+    <script>
+        function showConfirmation(docente_id) {
+            Swal.fire({
+                icon: 'question',
+                title: 'Conferma rimozione docente',
+                text: 'Confermi di voler rimuovere il docente?',
+                showCancelButton: true,
+                confirmButtonText: 'Conferma',
+                cancelButtonText: 'Annulla'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Se la conferma è stata accettata, invia il form
+                    const form = document.getElementById('addForm');
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'docente_id';
+                    input.value = docente_id;
+                    form.appendChild(input);
+                    form.submit();
+                }
+            });
+        }
+    </script>
 
 {% endblock %}

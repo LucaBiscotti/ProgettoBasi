@@ -37,18 +37,6 @@
                    placeholder="12">
             </input>
         </p>
-        <p>
-            <label for="data_i">Data inizio</label>
-            <input type="date" name="data_i"
-                   placeholder="">
-            </input>
-        </p>
-        <p>
-            <label for="data_f">Data Fine</label>
-            <input type="date" name="data_f"
-                   placeholder="">
-            </input>
-        </p>
 
         <p>
             <button type="submit">Crea</button>
@@ -67,10 +55,8 @@
             var codice = document.getElementById("codice").value;
             var anno = document.getElementsByName("anno")[0].value;
             var cfu = document.getElementsByName("cfu")[0].value;
-            var data_i = document.getElementsByName("data_i")[0].value;
-            var data_f = document.getElementsByName("data_f")[0].value;
     
-            if (insegnamento === "" || codice === "" || anno === "" || cfu === "" || data_i === "" || data_f === "") {
+            if (insegnamento === "" || codice === "" || anno === "" || cfu === "") {
                 Swal.fire({
                     icon: 'error',
                     title: 'Manca qualcosa',
