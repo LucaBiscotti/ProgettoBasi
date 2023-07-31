@@ -13,14 +13,24 @@
 {% block content %}
 
 <h1>{% block title %} Prove {{ esame.codice_corso }} {% endblock %}</h1>
+<div class="button-edit">
+    <!--<h2>Modifica i membri dell'esame</h2>-->
+    <button type="button">
+        <a href="{{url_for('routes.edit_profs', esame_id=esame.id)}}">Modifica Membri</a>
+    </button>
+</div>
+
+<input type="hidden" id="error-value" value="{{ error }}">
 <div class="content">
     {% for prova in prove %}
         <div class="student">
-            <a href="#" class="student">
-                <h4>{{ prova.titolo }}</h4> 
+            <a href="{{url_for('routes.edit_prova', id=prova.id)}}" class="student">
+                <h4 title="clicca per modificare">{{ prova.titolo }}</h4> 
             </a>
             <p>DATA DELLA PROVA: {{ prova.data_inizio }} </p>
-            <p>DURATA: {{ prova.tipo_scadenza.name }}</p>
+            <p>DURATA: {{ prova.durata }} minuti</p>
+            <p>AULA: {{ prova.aula }}</p>
+            <p>TIPO DI SCADENZA: {{ prova.tipo_scadenza.name }}</p>
             <p>TIPO VALUTAZIONE: {{ prova.tipo_voto.name }}</p>
             <p>PERCENTUALE PROVA: {{ prova.percentuale * 100 }}%</p>
             <div class="link">
@@ -28,5 +38,27 @@
             </div>
         </div>
     {% endfor %}
+    
+    
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.js"></script>
+
+<script>
+    function flashing() {
+        var errorValue = (document.getElementById('error-value').value);
+
+        if (errorValue.toLowerCase() === "true") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Non hai i permessi',
+                text: 'Solo il docente verbalizzante può accedere a questa area',
+            });
+            return false;
+        }
+    }
+
+    flashing();
+</script>
+
 {% endblock %}

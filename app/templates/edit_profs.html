@@ -26,11 +26,11 @@
                         <td><p>{{ doc.Docenti.email }}</p></td>
                         <td><p>{{ doc.ruolo.value }}</p></td>
                         <td>{% if doc.ruolo.value == "PRESIDENTE" %}
-                                <button type="button" class="btn btn-primary" disabled>
+                                <button type="button" class="btn btn-primary" disabled style="width: fit-content;">
                                     Rimuovi
                                 </button>
                             {% else %}
-                                <button type="submit" class="btn btn-primary" name="docente_id" value="{{ doc.Docenti.id }}">
+                                <button type="submit" class="btn btn-primary" name="docente_id" value="{{ doc.Docenti.id }}" style="width: fit-content;">
                                     Rimuovi
                                 </button>
                             {% endif %}

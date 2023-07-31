@@ -48,11 +48,13 @@
     </p>
 
     <p>
-        <button type="submit">Modifica</button>
-        <button type="reset">Reset</button>
-        <button type="button">
-            <a href="{{url_for('routes.exam', esame_id=prova.id_esame)}}">Chiudi</a>
-        </button>
+        <div class="buttons" style="display: flex; gap: 10px;"></div>
+            <button type="submit">Modifica</button>
+            <button type="reset">Reset</button>
+            <a href="{{url_for('routes.exam', esame_id=prova.id_esame)}}" style="color: white; text-decoration: none;">
+                <button type="button"> Chiudi </button>
+            </a>
+        </div>
     </p>
 </form>
 

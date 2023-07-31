@@ -32,7 +32,7 @@
                 <td><p>
                     <!-- Da sistemare il controllo sul voto -->
                     {% if studente['totale'] == none %}
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong" data-matricola="{{ studente['studente'].matricola }}">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong" data-matricola="{{ studente['studente'].matricola }}" style="width: fit-content;">
                             Verbalizza
                         </button>
                     {% else %}
