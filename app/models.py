@@ -62,8 +62,6 @@ class Esami(db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     cfu = db.Column(db.Integer, nullable=False)
     anno_accademico = db.Column(db.Integer, nullable=False)
-    data_inizio = db.Column(db.Date, nullable=False)
-    data_fine = db.Column(db.Date, nullable=False)
     codice_corso = db.deferred(db.Column(db.String(5), db.ForeignKey('corsi.codice', deferrable=True, initially="DEFERRED")))
     prove = db.relationship('Prove', backref='prova_esame', lazy=True)
     esami_svolti = db.relationship('EsamiSvolti', backref='esame', lazy=True)

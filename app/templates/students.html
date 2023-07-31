@@ -17,7 +17,7 @@
                     <th><input type="text" name="filtro_cognome" value="{{filtro_cognome}}" placeholder="Filtra per cognome" style="color: black;"></th>
                     <th><input type="text" name="filtro_nome" value="{{filtro_nome}}" placeholder="Filtra per nome" style="color: black;"></th>
                     <th><input type="text" name="filtro_email" value="{{filtro_email}}" placeholder="Filtra per email" style="color: black;">
-                    <input type="submit" value="Filtra" style="color: black;"></input>
+                    <th><input type="submit" value="Filtra" style="color: black;"></input></th>
                 </tr>
             </form>
             <tr>
@@ -25,6 +25,7 @@
                 <th>Cognome</th>
                 <th>Nome</th>
                 <th>Email</th>
+                <th></th>
             </tr>
             {% for studente in studenti %}
                 <tr>
@@ -32,7 +33,7 @@
                     <td><p>{{ studente.cognome }}</p></td>
                     <td><p>{{ studente.nome }}</p></td>
                     <td><p>{{ studente.email }}</p></td>
-                </tr>
+                    <td><a href="{{url_for('routes.student', id=studente.matricola)}}">Visualizza</a>
             {% endfor %}
         </table>
     </div>

@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify, render_template, request, url_for, redirec
 from models import *
 from forms import LoginForm
 from flask_login import login_user, logout_user, login_required, current_user, LoginManager
+from sqlalchemy import asc
 
 login_manager = LoginManager()
 
@@ -62,15 +63,9 @@ def create():
         #Create Esami record
         cfu = int(request.form['cfu'])
         anno = request.form['anno']
-        Sdatai = request.form['data_i']
-        Sdataf = request.form['data_f']
         cod = request.form['codice']
-        datai = date.fromisoformat(Sdatai)
-        dataf = date.fromisoformat(Sdataf)
         exam = Esami(cfu = cfu,
                             anno_accademico=anno,
-                            data_inizio=datai,
-                            data_fine=dataf,
                             codice_corso=cod)
         db.session.add(exam)
         db.session.commit()
@@ -229,7 +224,9 @@ def student_exam(id):
 @bp.route('/student_prove/<int:id>', methods=('GET', 'POST'))
 @login_required
 def student_prove(id):
-    if not permission(id):
+    prova = Prove.query.get(id)
+    id_esame = prova.id_esame
+    if not permission(id_esame):
         return redirect(url_for('routes.index'))
 
     if request.method == 'POST':
@@ -242,15 +239,12 @@ def student_prove(id):
         db.session.add(verbal)
         db.session.commit()
         
-    prova = Prove.query.get(id)
     lista = Studenti.query.join(ListaIscritti, Studenti.matricola == ListaIscritti.matricola_studente).filter(ListaIscritti.id_prova == prova.id).add_columns(ListaIscritti.voto).add_columns(ListaIscritti.data_scadenza, ListaIscritti.accettato)
     return render_template('student_prove.html',prova = prova, studenti = lista)
 
 @bp.route('/edit_prova/<int:id>', methods=('GET', 'POST'))
 @login_required
 def edit_prova(id):
-    if not permission(id):
-        return redirect(url_for('routes.index'))
 
     if request.method == 'POST':
         edit = Prove.query.get(id)
@@ -323,3 +317,36 @@ def add_profs(esame_id):
     profs = lista.all()
 
     return render_template('add_profs.html',esame = esame, profs=profs, filtro_cognome = filtro_cognome, filtro_nome = filtro_nome)
+
+
+@bp.route('/student/<id>', methods=('GET', 'POST'))
+@login_required
+def student(id):
+    studente = Studenti.query.get(id)
+
+    esami_sostenuti = Esami.query \
+        .join(EsamiSvolti) \
+        .filter(EsamiSvolti.registrato == studente) \
+        .order_by(asc(Esami.codice_corso)) \
+        .add_columns(EsamiSvolti.data, EsamiSvolti.voto) \
+        .all()
+    
+    esami_iscritto = Esami.query \
+        .join(Prove, ListaIscritti) \
+        .filter(Prove.id_esame == Esami.id, ListaIscritti.id_prova == Prove.id, Esami.id.notin_([esame.Esami.id for esame in esami_sostenuti])) \
+        .all()
+
+    return render_template('student.html', mat = id, esami = esami_sostenuti, esamini = esami_iscritto)
+
+@bp.route('/student_specific/<id>/<int:esame_id>', methods=('GET', 'POST'))
+@login_required
+def student_specific(id,esame_id):
+    studente = Studenti.query.get(id)
+
+    prove_studente = Prove.query \
+        .join(ListaIscritti,Esami) \
+        .filter(ListaIscritti.iscritto == studente, Prove.id_esame == esame_id) \
+        .order_by(asc(Prove.id_esame)) \
+        .add_columns(ListaIscritti.sostenuto, ListaIscritti.voto, Esami.codice_corso) \
+        .all()
+    return render_template('student_specific.html', prove = prove_studente, mat = id)

@@ -24,18 +24,44 @@
                 <th>Nome</th>
                 <th>Aggiungi</th>
             </tr>
-            <form method="POST">
+            <form method="POST" id="addForm">
                 {% for prof in profs %}
                     <tr>
                         <td><p>{{ prof.cognome }}</p></td>
                         <td><p>{{ prof.nome }}</p></td>
                         <td>
-                            <button type="submit" name="docente_id" value="{{ prof.id }}">Aggiungi</button>
+                            <button type="button" onclick="showConfirmation('{{ prof.id }}')">Aggiungi</button>
                         </td>
                     </tr>
                 {% endfor %}
             </form>
         </table>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.js"></script>
+
+    <script>
+        function showConfirmation(docente_id) {
+            Swal.fire({
+                icon: 'question',
+                title: 'Conferma aggiunta docente',
+                text: 'Confermi di voler aggiungere il docente?',
+                showCancelButton: true,
+                confirmButtonText: 'Aggiungi',
+                cancelButtonText: 'Annulla'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Se la conferma è stata accettata, invia il form
+                    const form = document.getElementById('addForm');
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'docente_id';
+                    input.value = docente_id;
+                    form.appendChild(input);
+                    form.submit();
+                }
+            });
+        }
+    </script>
 
 {% endblock %}

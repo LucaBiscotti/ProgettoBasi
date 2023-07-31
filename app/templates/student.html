@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block name %}
+    <a href="{{url_for('routes.students')}}">
+        <i class="gg-arrow-left-o"></i>
+    </a>
+{% endblock %}
+
+{% block content %}
+<h1 class="title">{% block title %} Esami {{mat}} {% endblock %}</h1>
+<div class="content">
+    <table>
+        <tr>
+            <th>Codice esame</th>
+            <th>Anno</th>
+            <th>Stato</th>
+            <th>Voto</th>
+            <th>Data</th>
+            <th>Visualizza</th>
+        </tr>
+        {% for esame in esami %}
+            <tr>
+                <td>{{esame.Esami.codice_corso}}</td>
+                <td>{{ esame.Esami.anno_accademico }}</td>
+                <td>Passato</td>
+                <td>{{esame.voto}}</td>
+                <td>{{esame.data}}</td>
+                <td><a href="{{url_for('routes.student_specific', id = mat, esame_id = esame.Esami.id)}}">Visualizza</a>
+            </tr>
+        {% endfor %}
+        {% for esame in esamini %}
+            <tr>
+                <td>{{esame.codice_corso}}</td>
+                <td>{{ esame.anno_accademico }}</td>
+                <td>Iscritto</td>
+                <td>Da sostenere</td>
+                <td>Da sostenere</td>
+                <td><a href="{{url_for('routes.student_specific', id = mat, esame_id = esame.id)}}">Visualizza</a>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block name %}
+    <a href="{{url_for('routes.student', id = mat)}}">
+        <i class="gg-arrow-left-o"></i>
+    </a>
+{% endblock %}
+
+{% block content %}
+<h1 class="title">{% block title %} Prove {{ mat }}{% endblock %}</h1>
+<div class="content">
+    <table>
+        <tr>
+            <th>Codice esame</th>
+            <th>Titolo prova</th>
+            <th>Stato</th>
+            <th>Voto</th>
+        </tr>
+        {% for prova in prove %}
+            <tr>
+                <td>{{prova.codice_corso}}</td>
+                <td>{{prova.Prove.titolo}}</td>
+                {% if prova.sostenuto %}
+                    <td>Sostenuto</td>
+                    <td>{{prova.voto}}</td>
+                {% else %}
+                    <td>Iscritto</td>
+                    <td>Da sostenere</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
