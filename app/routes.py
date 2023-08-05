@@ -192,26 +192,19 @@ def student_exam(id):
     studenti = []
     lista_ordinata = sorted(lista, key=lambda x: x.Studenti.matricola)  # Ordina per matricola
     for matricola, group in groupby(lista_ordinata, key=lambda x: x.Studenti.matricola):  # Raggruppa per matricola
-        print("LOL")
         voto = [0] * len(prove)
         sos = [0] * len(prove)  # Crea una lista di zeri per le prove
         for row in group:
-            print(row)
             for i, prova in enumerate(prove):
-                print(i)
                 test = 0
                 if row.id_prova == prova.id:
                     sos[i] = 1
                     test = 1
-                    print("Trovato")
                 if row.voto is not None and test == 1:
                     voto[i] = row.voto
-                    print("trovato " + row.voto)
                 else:
                     if(voto[i] == 0):
                         voto[i] = "Non sostenuto"
-                    print(row.voto)
-                print(voto)
 
         studenti.append({
             'studente': row.Studenti,
@@ -333,7 +326,7 @@ def student(id):
     
     esami_iscritto = Esami.query \
         .join(Prove, ListaIscritti) \
-        .filter(Prove.id_esame == Esami.id, ListaIscritti.id_prova == Prove.id, Esami.id.notin_([esame.Esami.id for esame in esami_sostenuti])) \
+        .filter(Prove.id_esame == Esami.id, ListaIscritti.iscritto == studente, ListaIscritti.id_prova == Prove.id, Esami.id.notin_([esame.Esami.id for esame in esami_sostenuti])) \
         .all()
 
     return render_template('student.html', mat = id, esami = esami_sostenuti, esamini = esami_iscritto)

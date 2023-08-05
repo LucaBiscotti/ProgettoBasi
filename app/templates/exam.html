@@ -12,18 +12,22 @@
 
 {% block content %}
 
-
-
-
 <h1>{% block title %} Prove {{ esame.codice_corso }} {% endblock %}</h1>
+<div class="button-edit">
+    <!--<h2>Modifica i membri dell'esame</h2>-->
+    <button type="button">
+        <a href="{{url_for('routes.edit_profs', esame_id=esame.id)}}">Modifica Membri</a>
+    </button>
+</div>
+
 <input type="hidden" id="error-value" value="{{ error }}">
 <div class="content">
     {% for prova in prove %}
         <div class="student">
             <a href="{{url_for('routes.edit_prova', id=prova.id)}}" class="student">
-                <h6>{{ prova.titolo }}</h6> 
+                <h4 title="clicca per modificare">{{ prova.titolo }}</h4> 
             </a>
-            <p class="name">DATA DELLA PROVA: {{ prova.data_inizio }} </p>
+            <p>DATA DELLA PROVA: {{ prova.data_inizio }} </p>
             <p>DURATA: {{ prova.durata }} minuti</p>
             <p>AULA: {{ prova.aula }}</p>
             <p>TIPO DI SCADENZA: {{ prova.tipo_scadenza.name }}</p>
@@ -35,12 +39,7 @@
         </div>
     {% endfor %}
     
-    <div>
-        <h2>Modifica i membri dell'esame</h2>
-        <button type="button">
-            <a href="{{url_for('routes.edit_profs', esame_id=esame.id)}}">Modifica</a>
-        </button>
-    </div>
+    
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.js"></script>
@@ -61,7 +60,5 @@
 
     flashing();
 </script>
-
-
 
 {% endblock %}

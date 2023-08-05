@@ -26,11 +26,11 @@
                         <td><p>{{ doc.Docenti.email }}</p></td>
                         <td><p>{{ doc.ruolo.value }}</p></td>
                         <td>{% if doc.ruolo.value == "PRESIDENTE" %}
-                                <button type="button" class="btn btn-primary" disabled>
+                                <button type="button" class="btn btn-primary" disabled style="width: fit-content;">
                                     Rimuovi
                                 </button>
                             {% else %}
-                                <button type="button" onclick="showConfirmation('{{ doc.Docenti.id }}')" class="btn btn-primary">
+                                <button type="button" onclick="showConfirmation('{{ doc.Docenti.id }}')" class="btn btn-primary" style="width: fit-content;">
                                     Rimuovi
                                 </button>
                             {% endif %}
@@ -54,7 +54,7 @@
                 title: 'Conferma rimozione docente',
                 text: 'Confermi di voler rimuovere il docente?',
                 showCancelButton: true,
-                confirmButtonText: 'Conferma',
+                confirmButtonText: 'Rimuovi',
                 cancelButtonText: 'Annulla'
             }).then((result) => {
                 if (result.isConfirmed) {

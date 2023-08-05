@@ -57,9 +57,9 @@
         <p>
             <button type="submit">Crea</button>
             <button type="reset">Reset</button>
-            <button type="button">
-                <a href="{{url_for('routes.exam', esame_id=id)}}">Chiudi</a>
-            </button>
+            <a href="{{url_for('routes.exam', esame_id=id)}}" style="color: white; text-decoration: none;">
+                <button type="button"> Chiudi </button>
+            </a>
         </p>
     </form>
 

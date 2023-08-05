@@ -27,7 +27,7 @@
             <td><p>{{ studente.Studenti.email }}</p></td>
             <td><p>{{ studente.data_scadenza }}</p></td>
             <td>{% if studente.voto is none %}
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong" data-matricola="{{ studente.Studenti.matricola }}">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong" data-matricola="{{ studente.Studenti.matricola }}" style="width: fit-content;">
                     Inserisci voto
                 </button>
             {% else %}
@@ -36,8 +36,10 @@
             </td>
             <td>{% if studente.accettato is none %}
                     In attesa
+                {% elif studente.accettato %}
+                    Si
                 {% else %}
-                    {{ studente.accettato }}
+                    No
                 {% endif %}
             </td>
         </tr>

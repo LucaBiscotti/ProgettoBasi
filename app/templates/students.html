@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 
+{% block name %}
+    <a href="{{url_for('routes.index')}}">
+        <i class="gg-arrow-left-o"></i>
+    </a>
+{% endblock %}
+
 {% block content %}
     <h1 class="title">{% block title %} Studenti {% endblock %}</h1>
 
@@ -7,11 +13,11 @@
         <table>
             <form action="{{ url_for('routes.students') }}" method="GET">
                 <tr>
-                    <th><input type="text" name="filtro_matricola" value="{{filtro_matricola}}" placeholder="Filtra per matricola"></th>
-                    <th><input type="text" name="filtro_cognome" value="{{filtro_cognome}}" placeholder="Filtra per cognome"></th>
-                    <th><input type="text" name="filtro_nome" value="{{filtro_nome}}" placeholder="Filtra per nome"></th>
-                    <th><input type="text" name="filtro_email" value="{{filtro_email}}" placeholder="Filtra per email"></th>
-                    <th><input type="submit" value="Filtra"></input></th>
+                    <th><input type="text" name="filtro_matricola" value="{{filtro_matricola}}" placeholder="Filtra per matricola" style="color: black;" ></th>
+                    <th><input type="text" name="filtro_cognome" value="{{filtro_cognome}}" placeholder="Filtra per cognome" style="color: black;"></th>
+                    <th><input type="text" name="filtro_nome" value="{{filtro_nome}}" placeholder="Filtra per nome" style="color: black;"></th>
+                    <th><input type="text" name="filtro_email" value="{{filtro_email}}" placeholder="Filtra per email" style="color: black;">
+                    <th><input type="submit" value="Filtra" style="color: black;"></input></th>
                 </tr>
             </form>
             <tr>
